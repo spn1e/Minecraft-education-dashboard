@@ -1,13 +1,28 @@
-streamlit==1.31.0
-pandas==2.2.0
-numpy==1.26.3
-plotly==5.18.0
-scipy==1.12.0
-scikit-learn==1.4.0
-statsmodels==0.14.1
-networkx==3.2.1
-faker==22.2.0
-pyyaml==6.0.1
-pingouin==0.5.4
-ruptures==1.1.9
-seaborn==0.13.2
+# Core Streamlit and Data Processing
+streamlit>=1.28.0
+pandas>=1.5.0
+numpy>=1.21.0
+
+# Visualization
+plotly>=5.0.0
+
+# Scientific Computing
+scipy>=1.9.0
+scikit-learn>=1.0.0
+statsmodels>=0.13.0
+
+# Network Analysis
+networkx>=2.8
+
+# Data Generation
+faker>=15.0.0
+
+# Configuration
+pyyaml>=6.0
+
+# Statistical Analysis (simplified versions)
+seaborn>=0.11.0
+
+# Time Series (optional - remove if causing issues)
+# ruptures>=1.1.0
+# pingouin>=0.5.0
