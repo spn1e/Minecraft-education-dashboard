@@ -4,13 +4,30 @@ import plotly.express as px
 import plotly.graph_objects as go
 from pathlib import Path
 import sys
+import os
 
-# Add src to path
-sys.path.append(str(Path(__file__).parent))
+# Fix Python path for Streamlit Cloud
+current_dir = Path(__file__).parent
+sys.path.insert(0, str(current_dir))
 
-from src.data_generation.simulator import MinecraftEducationSimulator, create_config
-from src.analysis.statistical import EducationalStatisticsAnalyzer
-from src.analysis.time_series import TimeSeriesEducationAnalyzer
+# Alternative path configurations for different environments
+if not os.path.exists(os.path.join(current_dir, 'src')):
+    # Try parent directory
+    parent_dir = current_dir.parent
+    if os.path.exists(os.path.join(parent_dir, 'src')):
+        sys.path.insert(0, str(parent_dir))
+
+# Now import your modules
+try:
+    from src.data_generation.simulator import MinecraftEducationSimulator, create_config
+    from src.analysis.statistical import EducationalStatisticsAnalyzer
+    from src.analysis.time_series import TimeSeriesEducationAnalyzer
+except ImportError as e:
+    st.error(f"Import Error: {e}")
+    st.error(f"Current directory: {os.getcwd()}")
+    st.error(f"Python path: {sys.path}")
+    st.error(f"Directory contents: {os.listdir('.')}")
+    st.stop()
 
 # Page configuration
 st.set_page_config(
