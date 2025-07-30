@@ -1,5 +1,4 @@
-### src/analysis/statistical.py
-```python
+# src/analysis/statistical.py (Fixed version)
 import pandas as pd
 import numpy as np
 from scipy import stats
@@ -30,8 +29,8 @@ class EducationalStatisticsAnalyzer:
         
         # Check assumptions
         normality_results = {
-            groups[0]: stats.shapiro(group1_data),
-            groups[1]: stats.shapiro(group2_data)
+            str(groups[0]): stats.shapiro(group1_data),
+            str(groups[1]): stats.shapiro(group2_data)
         }
         
         # Levene's test for equal variances
@@ -52,11 +51,12 @@ class EducationalStatisticsAnalyzer:
             test_type = "Mann-Whitney U test"
         
         # Effect size (Cohen's d)
-        cohens_d = (group1_data.mean() - group2_data.mean()) / np.sqrt(
+        pooled_std = np.sqrt(
             ((len(group1_data) - 1) * group1_data.std()**2 + 
              (len(group2_data) - 1) * group2_data.std()**2) / 
             (len(group1_data) + len(group2_data) - 2)
         )
+        cohens_d = (group1_data.mean() - group2_data.mean()) / pooled_std
         
         # Power analysis
         power = ttest_power(cohens_d, len(group1_data), alpha=0.05)
@@ -64,24 +64,24 @@ class EducationalStatisticsAnalyzer:
         results = {
             'test_type': test_type,
             'groups': {
-                groups[0]: {
-                    'mean': group1_data.mean(),
-                    'std': group1_data.std(),
-                    'n': len(group1_data),
-                    'normality_p': normality_results[groups[0]][1]
+                str(groups[0]): {
+                    'mean': float(group1_data.mean()),
+                    'std': float(group1_data.std()),
+                    'n': int(len(group1_data)),
+                    'normality_p': float(normality_results[str(groups[0])][1])
                 },
-                groups[1]: {
-                    'mean': group2_data.mean(),
-                    'std': group2_data.std(),
-                    'n': len(group2_data),
-                    'normality_p': normality_results[groups[1]][1]
+                str(groups[1]): {
+                    'mean': float(group2_data.mean()),
+                    'std': float(group2_data.std()),
+                    'n': int(len(group2_data)),
+                    'normality_p': float(normality_results[str(groups[1])][1])
                 }
             },
-            'levene_test': {'statistic': levene_stat, 'p_value': levene_p},
-            'test_statistic': t_stat,
-            'p_value': p_value,
-            'effect_size': cohens_d,
-            'statistical_power': power,
+            'levene_test': {'statistic': float(levene_stat), 'p_value': float(levene_p)},
+            'test_statistic': float(t_stat),
+            'p_value': float(p_value),
+            'effect_size': float(cohens_d),
+            'statistical_power': float(power),
             'interpretation': self._interpret_effect_size(cohens_d),
             'significant': p_value < 0.05
         }
@@ -107,8 +107,8 @@ class EducationalStatisticsAnalyzer:
                 group_data = data[data[factor] == group][dependent_var]
                 stat, p_val = stats.shapiro(group_data)
                 normality_results[f"{factor}_{group}"] = {
-                    'statistic': stat, 
-                    'p_value': p_val,
+                    'statistic': float(stat), 
+                    'p_value': float(p_val),
                     'normal': p_val > 0.05
                 }
         
@@ -118,8 +118,8 @@ class EducationalStatisticsAnalyzer:
             groups = [group[dependent_var].values for name, group in data.groupby(factor)]
             stat, p_val = stats.levene(*groups)
             levene_results[factor] = {
-                'statistic': stat,
-                'p_value': p_val,
+                'statistic': float(stat),
+                'p_value': float(p_val),
                 'equal_variances': p_val > 0.05
             }
         
@@ -204,28 +204,28 @@ class EducationalStatisticsAnalyzer:
         
         results = {
             'linear_regression': {
-                'r2_score': r2_score(y_test, lr_pred),
-                'rmse': np.sqrt(mean_squared_error(y_test, lr_pred)),
+                'r2_score': float(r2_score(y_test, lr_pred)),
+                'rmse': float(np.sqrt(mean_squared_error(y_test, lr_pred))),
                 'cv_scores': cv_scores_lr.tolist(),
-                'cv_mean': cv_scores_lr.mean(),
-                'cv_std': cv_scores_lr.std()
+                'cv_mean': float(cv_scores_lr.mean()),
+                'cv_std': float(cv_scores_lr.std())
             },
             'ridge_regression': {
-                'r2_score': r2_score(y_test, ridge_pred),
-                'rmse': np.sqrt(mean_squared_error(y_test, ridge_pred)),
+                'r2_score': float(r2_score(y_test, ridge_pred)),
+                'rmse': float(np.sqrt(mean_squared_error(y_test, ridge_pred))),
                 'cv_scores': cv_scores_ridge.tolist(),
-                'cv_mean': cv_scores_ridge.mean(),
-                'cv_std': cv_scores_ridge.std()
+                'cv_mean': float(cv_scores_ridge.mean()),
+                'cv_std': float(cv_scores_ridge.std())
             },
             'polynomial_regression': {
-                'r2_score': r2_score(y_test, poly_pred),
-                'rmse': np.sqrt(mean_squared_error(y_test, poly_pred)),
-                'n_features': X_train_poly.shape[1]
+                'r2_score': float(r2_score(y_test, poly_pred)),
+                'rmse': float(np.sqrt(mean_squared_error(y_test, poly_pred))),
+                'n_features': int(X_train_poly.shape[1])
             },
             'feature_importance': feature_importance.to_dict('records'),
             'residual_analysis': {
-                'mean_residual': residuals.mean(),
-                'std_residual': residuals.std(),
+                'mean_residual': float(residuals.mean()),
+                'std_residual': float(residuals.std()),
                 'shapiro_test': stats.shapiro(residuals)
             },
             'sample_predictions': pd.DataFrame({
@@ -262,10 +262,9 @@ class EducationalStatisticsAnalyzer:
                 
                 interpretations[source] = {
                     'significance': sig,
-                    'p_value': row['p-unc'],
+                    'p_value': float(row['p-unc']),
                     'effect_size': effect,
-                    'eta_squared': row['eta_squared']
+                    'eta_squared': float(row['eta_squared'])
                 }
         
         return interpretations
-```
