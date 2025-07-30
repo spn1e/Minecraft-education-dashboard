@@ -29,7 +29,7 @@ class TimeSeriesEducationAnalyzer:
             data = data[data['student_id'] == student_id]
         
         ts_data = data.set_index(pd.to_datetime(data[date_col]))[value_col]
-        ts_data = ts_data.resample('D').mean().fillna(method='ffill')
+       ts_data = ts_data.resample('D').mean().ffill()
         
         results = {
             'summary_statistics': self._calculate_summary_stats(ts_data),
@@ -138,7 +138,7 @@ class TimeSeriesEducationAnalyzer:
         
         student_data = historical_data[historical_data['student_id'] == student_id]
         ts_data = student_data.set_index(pd.to_datetime(student_data['timestamp']))[metric]
-        ts_data = ts_data.resample('D').mean().fillna(method='ffill')
+       ts_data = ts_data.resample('D').mean().ffill()
         
         # Try multiple models
         models_results = {}
