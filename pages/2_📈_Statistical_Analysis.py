@@ -1,5 +1,4 @@
-## pages/2_📈_Statistical_Analysis.py
-```python
+# pages/2_📈_Statistical_Analysis.py
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -8,9 +7,16 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import sys
 from pathlib import Path
+from scipy import stats
 
+# Fix imports
 sys.path.append(str(Path(__file__).parent.parent))
-from src.analysis.statistical import EducationalStatisticsAnalyzer
+
+try:
+    from src.analysis.statistical import EducationalStatisticsAnalyzer
+except ImportError:
+    st.error("Could not import EducationalStatisticsAnalyzer. Please check your project structure.")
+    st.stop()
 
 st.set_page_config(page_title="Statistical Analysis", page_icon="📈", layout="wide")
 
@@ -332,4 +338,3 @@ if 'datasets' in st.session_state and st.session_state.datasets:
 
 else:
     st.warning("⚠️ Please generate data first using the sidebar!")
-```
