@@ -1,10 +1,3 @@
-# At the top of app.py, replace the src imports with:
-from utils import (
-    MinecraftEducationSimulator, 
-    create_config,
-    EducationalStatisticsAnalyzer,
-    TimeSeriesEducationAnalyzer
-)
 
 
 
