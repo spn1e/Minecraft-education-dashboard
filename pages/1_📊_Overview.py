@@ -1,8 +1,3 @@
-### pages/1_📊_Overview.py
-
-# For all page files (1_📊_Overview.py, 2_📈_Statistical_Analysis.py, etc.)
-# Replace the import section with this pattern:
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -15,11 +10,16 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Now you can import from src
-from src.analysis.statistical import EducationalStatisticsAnalyzer
-from src.analysis.time_series import TimeSeriesEducationAnalyzer
-from src.visualization.plots import EducationalVisualizer
-from src.utils.helpers import DataProcessor, StreamlitHelpers, AnalyticsHelpers
+# Import with error handling
+try:
+    from src.analysis.statistical import EducationalStatisticsAnalyzer
+    from src.analysis.time_series import TimeSeriesEducationAnalyzer
+    from src.visualization.plots import EducationalVisualizer
+    from src.utils.helpers import DataProcessor, StreamlitHelpers, AnalyticsHelpers
+except ImportError as e:
+    st.error(f"Import Error: {e}")
+    st.error("Please ensure all source files are present and __init__.py files exist")
+    st.stop()
 
 st.set_page_config(page_title="Overview", page_icon="📊", layout="wide")
 
@@ -69,18 +69,21 @@ if 'datasets' in st.session_state and st.session_state.datasets:
             f"+{avg_progression - 0.5:.2%} vs baseline"
         )
         
-        # Mini line chart
-        progression_over_time = datasets['quests'].groupby(
-            pd.to_datetime(datasets['quests']['start_time']).dt.date
-        )['score'].mean()
-        
-        fig_mini = px.line(
-            x=progression_over_time.index,
-            y=progression_over_time.values,
-            title="Daily Average Quest Scores"
-        )
-        fig_mini.update_layout(height=200, showlegend=False)
-        st.plotly_chart(fig_mini, use_container_width=True)
+        # Mini line chart with error handling
+        try:
+            progression_over_time = datasets['quests'].groupby(
+                pd.to_datetime(datasets['quests']['start_time']).dt.date
+            )['score'].mean()
+            
+            fig_mini = px.line(
+                x=progression_over_time.index,
+                y=progression_over_time.values,
+                title="Daily Average Quest Scores"
+            )
+            fig_mini.update_layout(height=200, showlegend=False)
+            st.plotly_chart(fig_mini, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error creating progression chart: {e}")
     
     with col3:
         # Collaboration network
@@ -91,14 +94,17 @@ if 'datasets' in st.session_state and st.session_state.datasets:
         )
         
         # Collaboration types
-        collab_types = datasets['collaborations']['interaction_type'].value_counts()
-        fig_pie = px.pie(
-            values=collab_types.values,
-            names=collab_types.index,
-            title="Collaboration Types"
-        )
-        fig_pie.update_layout(height=200)
-        st.plotly_chart(fig_pie, use_container_width=True)
+        try:
+            collab_types = datasets['collaborations']['interaction_type'].value_counts()
+            fig_pie = px.pie(
+                values=collab_types.values,
+                names=collab_types.index,
+                title="Collaboration Types"
+            )
+            fig_pie.update_layout(height=200)
+            st.plotly_chart(fig_pie, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error creating collaboration chart: {e}")
     
     st.markdown("---")
     
@@ -109,58 +115,67 @@ if 'datasets' in st.session_state and st.session_state.datasets:
     tab1, tab2, tab3 = st.tabs(["Grade Level Analysis", "Learning Styles", "Temporal Patterns"])
     
     with tab1:
-        # Grade level comparison
-        grade_analysis = datasets['students'].merge(
-            datasets['learning_analytics'], on='student_id'
-        ).groupby('grade_level').agg({
-            'engagement_score': 'mean',
-            'quest_completion_rate': 'mean',
-            'learning_gain': 'mean'
-        }).round(3)
-        
-        fig_grades = go.Figure()
-        
-        for metric in ['engagement_score', 'quest_completion_rate']:
-            fig_grades.add_trace(go.Bar(
-                x=grade_analysis.index,
-                y=grade_analysis[metric],
-                name=metric.replace('_', ' ').title()
-            ))
-        
-        fig_grades.update_layout(
-            title="Performance Metrics by Grade Level",
-            xaxis_title="Grade Level",
-            yaxis_title="Score",
-            barmode='group'
-        )
-        st.plotly_chart(fig_grades, use_container_width=True)
+        try:
+            # Grade level comparison
+            grade_analysis = datasets['students'].merge(
+                datasets['learning_analytics'], on='student_id'
+            ).groupby('grade_level').agg({
+                'engagement_score': 'mean',
+                'quest_completion_rate': 'mean',
+                'learning_gain': 'mean'
+            }).round(3)
+            
+            fig_grades = go.Figure()
+            
+            for metric in ['engagement_score', 'quest_completion_rate']:
+                fig_grades.add_trace(go.Bar(
+                    x=grade_analysis.index,
+                    y=grade_analysis[metric],
+                    name=metric.replace('_', ' ').title()
+                ))
+            
+            fig_grades.update_layout(
+                title="Performance Metrics by Grade Level",
+                xaxis_title="Grade Level",
+                yaxis_title="Score",
+                barmode='group'
+            )
+            st.plotly_chart(fig_grades, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error in grade analysis: {e}")
     
     with tab2:
-        # Learning style analysis
-        style_analysis = datasets['students'].merge(
-            datasets['learning_analytics'], on='student_id'
-        )
-        
-        fig_box = px.box(
-            style_analysis,
-            x='learning_style',
-            y='engagement_score',
-            color='learning_style',
-            title="Engagement by Learning Style"
-        )
-        st.plotly_chart(fig_box, use_container_width=True)
+        try:
+            # Learning style analysis
+            style_analysis = datasets['students'].merge(
+                datasets['learning_analytics'], on='student_id'
+            )
+            
+            fig_box = px.box(
+                style_analysis,
+                x='learning_style',
+                y='engagement_score',
+                color='learning_style',
+                title="Engagement by Learning Style"
+            )
+            st.plotly_chart(fig_box, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error in learning style analysis: {e}")
     
     with tab3:
-        # Temporal patterns
-        movements_hourly = pd.to_datetime(datasets['movements']['timestamp']).dt.hour.value_counts().sort_index()
-        
-        fig_temporal = px.bar(
-            x=movements_hourly.index,
-            y=movements_hourly.values,
-            title="Activity Distribution by Hour of Day",
-            labels={'x': 'Hour', 'y': 'Number of Activities'}
-        )
-        st.plotly_chart(fig_temporal, use_container_width=True)
+        try:
+            # Temporal patterns
+            movements_hourly = pd.to_datetime(datasets['movements']['timestamp']).dt.hour.value_counts().sort_index()
+            
+            fig_temporal = px.bar(
+                x=movements_hourly.index,
+                y=movements_hourly.values,
+                title="Activity Distribution by Hour of Day",
+                labels={'x': 'Hour', 'y': 'Number of Activities'}
+            )
+            st.plotly_chart(fig_temporal, use_container_width=True)
+        except Exception as e:
+            st.error(f"Error in temporal analysis: {e}")
 
 else:
     st.warning("⚠️ Please generate data first using the sidebar!")
