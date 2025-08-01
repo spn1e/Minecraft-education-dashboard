@@ -1,25 +1,9 @@
-## pages/5_📚_Documentation.py
-
-# For all page files (1_📊_Overview.py, 2_📈_Statistical_Analysis.py, etc.)
-# Replace the import section with this pattern:
-
 import streamlit as st
-import pandas as pd
-import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import sys
 from pathlib import Path
 
-# Add parent directory to path for imports
+# Add parent directory to path for imports (even though not used in this page)
 sys.path.insert(0, str(Path(__file__).parent.parent))
-
-# Now you can import from src
-from src.analysis.statistical import EducationalStatisticsAnalyzer
-from src.analysis.time_series import TimeSeriesEducationAnalyzer
-from src.visualization.plots import EducationalVisualizer
-from src.utils.helpers import DataProcessor, StreamlitHelpers, AnalyticsHelpers
 
 st.set_page_config(page_title="Documentation", page_icon="📚", layout="wide")
 
@@ -246,26 +230,71 @@ st.header("📥 Downloadable Resources")
 col1, col2, col3 = st.columns(3)
 
 with col1:
+    # Sample report content
+    sample_report = """# Minecraft Education Analytics Report
+
+## Executive Summary
+This report analyzes student engagement patterns in Minecraft Education Edition.
+
+## Key Findings
+- Collaborative learning increases engagement by 23%
+- Building complexity correlates with skill development
+- Early intervention can improve outcomes significantly
+
+## Recommendations
+1. Implement peer collaboration features
+2. Monitor at-risk students weekly
+3. Adjust difficulty based on performance
+"""
+    
     st.download_button(
         label="📄 Download Sample Report",
-        data="# Minecraft Education Analytics Report\n\nSample report content...",
+        data=sample_report,
         file_name="minecraft_education_report.md",
         mime="text/markdown"
     )
 
 with col2:
+    # Sample CSV data
+    sample_csv = """student_id,engagement_score,quest_completion_rate,days_active,risk_level
+STU_001,0.85,0.92,25,Low
+STU_002,0.62,0.78,18,Medium
+STU_003,0.41,0.45,8,High
+STU_004,0.93,0.96,28,Low
+STU_005,0.55,0.61,12,Medium"""
+    
     st.download_button(
         label="📊 Download Analysis Template",
-        data="student_id,engagement_score,quest_completion_rate\nSTU_001,0.85,0.92",
+        data=sample_csv,
         file_name="analysis_template.csv",
         mime="text/csv"
     )
 
 with col3:
+    # Sample config
+    sample_config = """# Minecraft Education Dashboard Configuration
+
+simulation:
+  n_students: 120
+  days: 60
+  seed: 42
+
+analytics:
+  engagement_weights:
+    quest_completion: 0.3
+    building_activity: 0.3
+    collaboration: 0.2
+    skill_progression: 0.2
+    
+risk_thresholds:
+  engagement_score: 0.3
+  quest_completion_rate: 0.4
+  days_active: 5
+"""
+    
     st.download_button(
         label="🔧 Download Config Template",
-        data="simulation:\n  n_students: 120\n  days: 60",
+        data=sample_config,
         file_name="config_template.yaml",
         mime="text/yaml"
     )
-
