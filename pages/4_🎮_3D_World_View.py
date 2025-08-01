@@ -1,5 +1,5 @@
 ## pages/4_🎮_3D_World_View.py
-```python
+
 # For all page files (1_📊_Overview.py, 2_📈_Statistical_Analysis.py, etc.)
 # Replace the import section with this pattern:
 
@@ -356,4 +356,4 @@ if 'datasets' in st.session_state and st.session_state.datasets:
 
 else:
     st.warning("⚠️ Please generate data first using the sidebar!")
-```
+
