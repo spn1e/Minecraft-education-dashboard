@@ -1,5 +1,5 @@
 ## pages/5_📚_Documentation.py
-```python
+
 # For all page files (1_📊_Overview.py, 2_📈_Statistical_Analysis.py, etc.)
 # Replace the import section with this pattern:
 
@@ -268,4 +268,4 @@ with col3:
         file_name="config_template.yaml",
         mime="text/yaml"
     )
-```
+
