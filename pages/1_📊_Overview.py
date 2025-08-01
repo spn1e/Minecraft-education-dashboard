@@ -1,10 +1,25 @@
 ### pages/1_📊_Overview.py
 ```python
+# For all page files (1_📊_Overview.py, 2_📈_Statistical_Analysis.py, etc.)
+# Replace the import section with this pattern:
+
 import streamlit as st
 import pandas as pd
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+# Now you can import from src
+from src.analysis.statistical import EducationalStatisticsAnalyzer
+from src.analysis.time_series import TimeSeriesEducationAnalyzer
+from src.visualization.plots import EducationalVisualizer
+from src.utils.helpers import DataProcessor, StreamlitHelpers, AnalyticsHelpers
 
 st.set_page_config(page_title="Overview", page_icon="📊", layout="wide")
 
